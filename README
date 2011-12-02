@@ -1,2 +1,13 @@
 alavue: Open Secure Distributed Remote Backup
 
+This is a two part project:
+
+1) Secure distributed remote file store: alavie.store
+	a) The backup script to be run on a schedule with cron or as needed
+	b) Encrypt and split all files individually inside a given directory or set of directories
+	c) Store each slice with a different cloud storage provider
+
+2) Complete emergency recovery with nothing more than your encryption key: alavue.recover
+	a) The recovery script to be run in the event of partial or total loss of local storage
+	b) Download all file slices from the cloud storage providers
+	c) Stich the slices back together and unencrypt
