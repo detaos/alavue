@@ -19,3 +19,26 @@
 
 #!/bin/bash
 
+#recursively loop though root local directory and all subdirectories
+
+ROOT_PATH=/home/detaos/alavue_test_files/*	#TODO replace with a pull from settings file
+
+shopt -s nullglob
+
+function process() {
+	for f in "$@"
+	do
+		if [ -d "$f" ]; then
+			process "$f"/*
+		else
+			echo "Processing: $f"
+			#if new || modified < previous backup time
+				#encrypt
+				#split
+				#upload
+			#fi
+		fi
+	done
+}
+
+process $ROOT_PATH
