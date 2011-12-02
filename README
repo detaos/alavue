@@ -14,3 +14,10 @@ This is a two part project:
 
 Notes:
 	- The cloud storage provider upload interface will be sftp where possible and implimented as vendor specific plugins otherwise
+
+Database Structure:
+
+Files:
+column		type		coallation			attributes		comments
+path		TINYTEXT	utf8_unicode_ci						full file path including name
+updated		INT								unsigned		millisecond time (since epoch) of last getting checked by alavue
