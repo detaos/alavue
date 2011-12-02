@@ -37,8 +37,12 @@ function process() {
 				#split
 				#upload
 			#fi
+			#update database
 		fi
 	done
 }
 
 process $ROOT_PATH
+
+#check for file deletions
+#TODO
