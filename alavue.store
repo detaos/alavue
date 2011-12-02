@@ -45,4 +45,4 @@ function process() {
 process $ROOT_PATH
 
 #check for file deletions
-#TODO
+#DELETE FROM `files` WHERE `updated` < $time_of_last_update
