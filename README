@@ -11,3 +11,6 @@ This is a two part project:
 	a) The recovery script to be run in the event of partial or total loss of local storage
 	b) Download all file slices from the cloud storage providers
 	c) Stich the slices back together and unencrypt
+
+Notes:
+	- The cloud storage provider upload interface will be sftp where possible and implimented as vendor specific plugins otherwise
