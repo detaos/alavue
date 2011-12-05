@@ -26,6 +26,7 @@ ROOT_PATH=/home/detaos/alavue_test_files/*
 ALAVUE_PATH=/home/detaos/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
 #END settings needing to be pulled
+TIME=`date +%s`
 
 shopt -s nullglob
 
@@ -49,23 +50,33 @@ SQL_CREATE
 fi
 
 function process() {
+	#if new, add file to database
+	sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
+	if [ "$sql_res" == "" ]; then
+		echo "adding file to database"
+		#INSERT
+	fi
+	#if modified < previous backup time
+		#encrypt
+		#split
+		#upload
+	#fi
+	#update database
+}
+
+function scan() {
 	for f in "$@"
 	do
 		if [ -d "$f" ]; then
-			process "$f"/*
+			scan "$f"/*
 		else
 			echo "Processing: $f"
-			#if new || modified < previous backup time
-				#encrypt
-				#split
-				#upload
-			#fi
-			#update database
+			process "$f"
 		fi
 	done
 }
 
-#process $ROOT_PATH
+scan $ROOT_PATH
 
 #check for file deletions
 #DELETE FROM `files` WHERE `updated` < $time_of_last_update
