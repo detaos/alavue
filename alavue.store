@@ -23,10 +23,23 @@
 
 #TODO replace the following with a pull from settings file
 ROOT_PATH=/home/detaos/alavue_test_files/*
-FILE_DB=/home/detaos/.alavue/file_db
+ALAVUE_PATH=/home/detaos/.alavue
+FILE_DB="$ALAVUE_PATH"/file_db
 #END settings needing to be pulled
 
 shopt -s nullglob
+
+#check for existence of alavue directory
+if [ ! -d "$ALAVUE_PATH" ]; then
+	echo "creating .alavue directory"
+	mkdir "$ALAVUE_PATH"
+fi
+
+#check for existence of file database
+if [ ! -f "$FILE_DB" ]; then
+	echo "creating file_db"
+	touch "$FILE_DB"
+fi
 
 function process() {
 	for f in "$@"
@@ -45,7 +58,7 @@ function process() {
 	done
 }
 
-process $ROOT_PATH
+#process $ROOT_PATH
 
 #check for file deletions
 #DELETE FROM `files` WHERE `updated` < $time_of_last_update
