@@ -21,7 +21,10 @@
 
 #recursively loop though root local directory and all subdirectories
 
-ROOT_PATH=/home/detaos/alavue_test_files/*	#TODO replace with a pull from settings file
+#TODO replace the following with a pull from settings file
+ROOT_PATH=/home/detaos/alavue_test_files/*
+FILE_DB=/home/detaos/.alavue/file_db
+#END settings needing to be pulled
 
 shopt -s nullglob
 
