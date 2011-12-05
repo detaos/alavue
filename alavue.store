@@ -39,6 +39,13 @@ fi
 if [ ! -f "$FILE_DB" ]; then
 	echo "creating file_db"
 	touch "$FILE_DB"
+	sqlite3 "$FILE_DB" <<SQL_CREATE
+CREATE TABLE files (
+	fid INTEGER PRIMARY KEY,
+	path TINYTEXT KEY ASC NOT NULL,
+	updated UNSIGNED INTEGER NOT NULL
+);
+SQL_CREATE
 fi
 
 function process() {
