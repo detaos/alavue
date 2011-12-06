@@ -19,8 +19,6 @@
 
 #!/bin/bash
 
-#recursively loop though root local directory and all subdirectories
-
 #TODO replace the following with a pull from settings file
 ROOT_PATH=/home/detaos/alavue_test_files/*
 ALAVUE_PATH=/home/detaos/.alavue
@@ -51,7 +49,8 @@ if [ ! -f "$FILE_DB" ]; then
 CREATE TABLE files (
 	fid INTEGER PRIMARY KEY,
 	path TINYTEXT KEY ASC NOT NULL,
-	updated UNSIGNED INTEGER NOT NULL
+	updated UNSIGNED INTEGER NOT NULL,
+	name TINYTEXT
 );
 SQL_CREATE
 fi
@@ -72,12 +71,21 @@ function process() {
 	if [ "$backup_time" -lt "$modified" ]; then
 		echo "storing updated copy in the cloud"
 		#encrypt
-		#split
+		cp "$f" "$f".enc	# TODO actually encrypt
+		#MxN split
+		split -n 2 "$f".enc "$f".enc.	# TODO actually do an MxN split
 		#upload
+		# TODO
+		#clean up from encryption and split
+		rm "$f".enc
+		rm "$f".enc.aa
+		rm "$f".enc.ab
 		#update database
+		#sqlite3 "$FILE_DB" UPDATE files SET ('updated'="$TIME") WHERE 'path'="$f"
 	fi
 }
 
+#recursively loop though root local directory and all subdirectories
 function scan() {
 	for f in "$@"
 	do
