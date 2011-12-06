@@ -60,11 +60,15 @@ function process() {
 	sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	if [ "$sql_res" == "" ]; then
 		echo "adding file to database"
-		sqlite3 "$FILE_DB" "INSERT INTO files (path, updated) VALUES ('$f', 0)"
+		cloud_name=`openssl dgst -sha1 -hex "$f"`
+		IFS=' ' read -ra cloud_name <<< "$cloud_name"
+		cloud_name="${cloud_name[${#cloud_name[@]}-1]}"
+		echo "$cloud_name"
+		sqlite3 "$FILE_DB" "INSERT INTO files (path, updated, name) VALUES ('$f', 0, '$cloud_name')"
 		sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	fi
 	IFS='|' read -ra sql_res <<< "$sql_res"
-	#sql select output format: fid|path|updated
+	#sql select output format: fid|path|updated|name
 	backup_time="${sql_res[2]}"
 	modified=`stat -c %Y "$f"`
 	#if previous backup time < modified time, ie backup is older than file
