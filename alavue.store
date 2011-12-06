@@ -77,9 +77,10 @@ function process() {
 		#encrypt
 		cp "$f" "$f".enc	# TODO actually encrypt
 		#MxN split
-		split -n 2 "$f".enc "$f".enc.	# TODO actually do an MxN split
+		split -n 2 "$f".enc "${sql_res[3]}".	# TODO actually do an MxN split
 		#upload
-		# TODO
+		#scp "${sql_res[3]}".aa username@server1.com:/$remote_path/alavue # TODO
+		#scp "${sql_res[3]}".ab username@server2.com:/$remote_path/alavue # TODO
 		#clean up from encryption and split
 		rm "$f".enc
 		rm "$f".enc.aa
