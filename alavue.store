@@ -25,10 +25,17 @@
 ROOT_PATH=/home/detaos/alavue_test_files/*
 ALAVUE_PATH=/home/detaos/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
+KEY=~/.ssh/id_rsa.pub
 #END settings needing to be pulled
 TIME=`date +%s`
 
 shopt -s nullglob
+
+#check for public key
+if [ ! -f $KEY ]; then
+	echo "alavue requires a key pair to function properly.  Please generate one and retry."
+	exit
+fi
 
 #check for existence of alavue directory
 if [ ! -d "$ALAVUE_PATH" ]; then
@@ -58,6 +65,7 @@ function process() {
 		sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	fi
 	IFS='|' read -ra sql_res <<< "$sql_res"
+	#sql select output format: fid|path|updated
 	backup_time="${sql_res[2]}"
 	modified=`stat -c %Y "$f"`
 	#if previous backup time < modified time, ie backup is older than file
@@ -85,4 +93,10 @@ function scan() {
 scan $ROOT_PATH
 
 #check for file deletions
-#DELETE FROM `files` WHERE `updated` < $time_of_last_update
+#for all files in database
+#do
+	#if path does not exist
+		#delete pieces from cloud
+		#DELETE FROM `files` WHERE path=f
+	#fi
+#done
