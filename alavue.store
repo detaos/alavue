@@ -54,14 +54,20 @@ function process() {
 	sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	if [ "$sql_res" == "" ]; then
 		echo "adding file to database"
-		#INSERT
+		sqlite3 "$FILE_DB" "INSERT INTO files (path, updated) VALUES ('$f', 0)"
+		sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	fi
-	#if modified < previous backup time
+	IFS='|' read -ra sql_res <<< "$sql_res"
+	backup_time="${sql_res[2]}"
+	modified=`stat -c %Y "$f"`
+	#if previous backup time < modified time, ie backup is older than file
+	if [ "$backup_time" -lt "$modified" ]; then
+		echo "storing updated copy in the cloud"
 		#encrypt
 		#split
 		#upload
-	#fi
-	#update database
+		#update database
+	fi
 }
 
 function scan() {
