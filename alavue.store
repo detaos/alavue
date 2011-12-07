@@ -62,8 +62,8 @@ function upload() {
 	#MxN split
 	split -n 2 "$1".enc "$2".	# TODO actually do an MxN split
 	#upload
-	#scp "${sql_res[3]}".aa username@server1.com:/$remote_path/alavue # TODO
-	#scp "${sql_res[3]}".ab username@server2.com:/$remote_path/alavue # TODO
+	#scp "$2".aa username@server1.com:/$remote_path/alavue # TODO
+	#scp "$2".ab username@server2.com:/$remote_path/alavue # TODO
 	#clean up from encryption and split
 	rm "$1".enc
 	rm "$2".aa
