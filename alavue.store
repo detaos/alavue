@@ -55,6 +55,23 @@ CREATE TABLE files (
 SQL_CREATE
 fi
 
+function upload() {
+	echo "storing updated copy in the cloud"
+	#encrypt
+	cp "$1" "$1".enc	# TODO actually encrypt
+	#MxN split
+	split -n 2 "$1".enc "$2".	# TODO actually do an MxN split
+	#upload
+	#scp "${sql_res[3]}".aa username@server1.com:/$remote_path/alavue # TODO
+	#scp "${sql_res[3]}".ab username@server2.com:/$remote_path/alavue # TODO
+	#clean up from encryption and split
+	rm "$1".enc
+	rm "$2".aa
+	rm "$2".ab
+	#update database
+	#sqlite3 "$FILE_DB" UPDATE files SET ('updated'="$TIME") WHERE 'path'="$f"
+}
+
 function process() {
 	#if new, add file to database
 	sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
@@ -73,20 +90,7 @@ function process() {
 	modified=`stat -c %Y "$f"`
 	#if previous backup time < modified time, ie backup is older than file
 	if [ "$backup_time" -lt "$modified" ]; then
-		echo "storing updated copy in the cloud"
-		#encrypt
-		cp "$f" "$f".enc	# TODO actually encrypt
-		#MxN split
-		split -n 2 "$f".enc "${sql_res[3]}".	# TODO actually do an MxN split
-		#upload
-		#scp "${sql_res[3]}".aa username@server1.com:/$remote_path/alavue # TODO
-		#scp "${sql_res[3]}".ab username@server2.com:/$remote_path/alavue # TODO
-		#clean up from encryption and split
-		rm "$f".enc
-		rm "$f".enc.aa
-		rm "$f".enc.ab
-		#update database
-		#sqlite3 "$FILE_DB" UPDATE files SET ('updated'="$TIME") WHERE 'path'="$f"
+		upload "$f" "${sql_res[3]}"
 	fi
 }
 
