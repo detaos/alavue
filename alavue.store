@@ -114,9 +114,9 @@ scan $ROOT_PATH
 #check for file deletions
 #for all files in database
 #do
-	#if path does not exist
+	#if [ ! -f "$f" ]; then #path does not exist
 		#delete pieces from cloud
-		#DELETE FROM files WHERE path='$f'
+		#sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
 	#fi
 #done
 #upload file_db
