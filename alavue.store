@@ -19,6 +19,8 @@
 
 #!/bin/bash
 
+./alavue.settings
+
 #TODO replace the following with a pull from settings file
 ROOT_PATH=/home/detaos/alavue_test_files/*
 ALAVUE_PATH=/home/detaos/.alavue
@@ -114,7 +116,7 @@ scan $ROOT_PATH
 #do
 	#if path does not exist
 		#delete pieces from cloud
-		#DELETE FROM `files` WHERE path=f
+		#DELETE FROM files WHERE path='$f'
 	#fi
 #done
 #upload file_db
