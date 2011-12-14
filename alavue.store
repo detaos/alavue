@@ -112,11 +112,17 @@ function scan() {
 scan $ROOT_PATH
 
 #check for file deletions
-#for all files in database
-#do
-	#if [ ! -f "$f" ]; then #path does not exist
-		#delete pieces from cloud
-		#sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
-	#fi
-#done
-#upload file_db
+sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files"`
+IFS=$(echo -en "\n\b")
+for entry in $sql_res
+do
+	IFS='|' read -ra entry <<< "$entry"
+	#sql select output format: fid|path|updated|name
+	f="${entry[1]}"
+	if [ ! -f "$f" ]; then #path does not exist
+		# TODO delete pieces from cloud
+		echo "delete $f"
+		sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
+	fi
+done
+# TODO upload file_db
