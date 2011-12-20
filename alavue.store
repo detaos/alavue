@@ -33,8 +33,6 @@ ROOT_PATH=~/alavue_test_files/*
 ALAVUE_PATH=~/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
 
-echo "using: $FILE_DB"
-
 #
 ## Cloud Storage Mount Points
 #
@@ -50,13 +48,11 @@ shopt -s nullglob
 
 #check for existence of alavue directory
 if [ ! -d "$ALAVUE_PATH" ]; then
-	echo "creating .alavue directory"
 	mkdir "$ALAVUE_PATH"
 fi
 
 #check for existence of file database
 if [ ! -f "$FILE_DB" ]; then
-	echo "creating file_db"
 	touch "$FILE_DB"
 	sqlite3 "$FILE_DB" <<SQL_CREATE
 CREATE TABLE files (
@@ -69,7 +65,6 @@ SQL_CREATE
 fi
 
 function upload() {
-	echo "storing updated copy in the cloud"
 	#encrypt
 	cp "$1" "$1".enc	# TODO actually encrypt
 	#MxN split
@@ -82,7 +77,6 @@ function upload() {
 	rm "$2".aa
 	rm "$2".ab
 	#update database
-	echo "TIME: $TIME, f: $f"
 	sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE path='$f'"
 }
 
@@ -90,11 +84,9 @@ function process() {
 	#if new, add file to database
 	sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	if [ "$sql_res" == "" ]; then
-		echo "adding file to database"
 		cloud_name=`openssl dgst -sha1 -hex "$f"`
 		IFS=' ' read -ra cloud_name <<< "$cloud_name"
 		cloud_name="${cloud_name[${#cloud_name[@]}-1]}"
-		echo "$cloud_name"
 		sqlite3 "$FILE_DB" "INSERT INTO files (path, updated, name) VALUES ('$f', 0, '$cloud_name')"
 		sql_res=`sqlite3 "$FILE_DB" "SELECT * FROM files WHERE path='$f'"`
 	fi
@@ -102,7 +94,6 @@ function process() {
 	#sql select output format: fid|path|updated|name
 	backup_time="${sql_res[2]}"
 	modified=`stat -c %Y "$f"`
-	echo "comparing: $backup_time <? $modified"
 	#if previous backup time < modified time, ie backup is older than file
 	if [ "$backup_time" -lt "$modified" ]; then
 		upload "$f" "${sql_res[3]}"
@@ -116,7 +107,6 @@ function scan() {
 		if [ -d "$f" ]; then
 			scan "$f"/*
 		else
-			echo "Processing: $f"
 			process "$f"
 		fi
 	done
@@ -136,7 +126,6 @@ do
 		cloud_name="${entry[3]}"
 		rm $mount_point0/"$cloud_name"
 		rm $mount_point1/"$cloud_name"
-		echo "delete $f"
 		sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
 	fi
 done
