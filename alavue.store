@@ -76,8 +76,6 @@ function upload() {
 	rm "$1".enc
 	rm "$2".aa
 	rm "$2".ab
-	#update database
-	sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE path='$f'"
 }
 
 function process() {
@@ -97,6 +95,8 @@ function process() {
 	#if previous backup time < modified time, ie backup is older than file
 	if [ "$backup_time" -lt "$modified" ]; then
 		upload "$f" "${sql_res[3]}"
+		#update database
+		sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE path='$f'"
 	fi
 }
 
