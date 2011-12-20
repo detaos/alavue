@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Alavue: Open Secure Distributed Remote Backup
 
 #Copyright: 2011-2012, Rick Battle <rick.battle@solmera.com>
@@ -17,25 +19,32 @@
 #You should have received a copy of the GNU General Public License
 #along with Alavue.  If not, see <http://www.gnu.org/licenses/>.
 
-#!/bin/bash
+function check_mount() {
+	if [ `mountpoint -q "$1"` ]; then
+		echo "Please mount $1"
+		exit 1
+	fi
+}
 
-./alavue.settings
-
-#TODO replace the following with a pull from settings file
-ROOT_PATH=/home/detaos/alavue_test_files/*
-ALAVUE_PATH=/home/detaos/.alavue
+#
+## Alavue Settings
+#
+ROOT_PATH=~/alavue_test_files/*
+ALAVUE_PATH=~/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
-KEY=~/.ssh/id_rsa.pub
-#END settings needing to be pulled
+
+#
+## Cloud Storage Mount Points
+#
+mount_point0=/media/alavue0
+mount_point1=/media/alavue1
+
+check_mount $mount_point0
+check_mount $mount_point1
+
 TIME=`date +%s`
 
 shopt -s nullglob
-
-#check for public key
-if [ ! -f $KEY ]; then
-	echo "alavue requires a key pair to function properly.  Please generate one and retry."
-	exit
-fi
 
 #check for existence of alavue directory
 if [ ! -d "$ALAVUE_PATH" ]; then
@@ -64,14 +73,14 @@ function upload() {
 	#MxN split
 	split -n 2 "$1".enc "$2".	# TODO actually do an MxN split
 	#upload
-	#scp "$2".aa username@server1.com:/$remote_path/alavue # TODO
-	#scp "$2".ab username@server2.com:/$remote_path/alavue # TODO
+	cp "$2".aa $mount_point0/"$2"
+	cp "$2".ab $mount_point1/"$2"
 	#clean up from encryption and split
 	rm "$1".enc
 	rm "$2".aa
 	rm "$2".ab
 	#update database
-	#sqlite3 "$FILE_DB" UPDATE files SET ('updated'="$TIME") WHERE 'path'="$f"
+	sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE 'path'='$f'"
 }
 
 function process() {
@@ -120,7 +129,9 @@ do
 	#sql select output format: fid|path|updated|name
 	f="${entry[1]}"
 	if [ ! -f "$f" ]; then #path does not exist
-		# TODO delete pieces from cloud
+		cloud_name="${entry[3]}"
+		rm $mount_point0/"$cloud_name"
+		rm $mount_point1/"$cloud_name"
 		echo "delete $f"
 		sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
 	fi
