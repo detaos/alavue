@@ -33,6 +33,8 @@ ROOT_PATH=~/alavue_test_files/*
 ALAVUE_PATH=~/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
 
+echo "using: $FILE_DB"
+
 #
 ## Cloud Storage Mount Points
 #
@@ -80,7 +82,8 @@ function upload() {
 	rm "$2".aa
 	rm "$2".ab
 	#update database
-	sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE 'path'='$f'"
+	echo "TIME: $TIME, f: $f"
+	sqlite3 "$FILE_DB" "UPDATE files SET updated='$TIME' WHERE path='$f'"
 }
 
 function process() {
@@ -99,6 +102,7 @@ function process() {
 	#sql select output format: fid|path|updated|name
 	backup_time="${sql_res[2]}"
 	modified=`stat -c %Y "$f"`
+	echo "comparing: $backup_time <? $modified"
 	#if previous backup time < modified time, ie backup is older than file
 	if [ "$backup_time" -lt "$modified" ]; then
 		upload "$f" "${sql_res[3]}"
