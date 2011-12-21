@@ -32,6 +32,7 @@ function check_mount() {
 ROOT_PATH=~/alavue_test_files
 ALAVUE_PATH=~/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
+KEY=foo
 
 #
 ## Cloud Storage Mount Points
@@ -71,7 +72,7 @@ function recover() {
 	#join
 	cat "$2"* > "$1".enc
 	#decrypt
-	cp -rf "$1".enc "$1"	# TODO actually decrypt
+	openssl enc -d -aes-256-ofb -k "$KEY" -in "$1".enc -out "$1"
 	#clean up from join and decrypt
 	rm "$2".aa
 	rm "$2".ab

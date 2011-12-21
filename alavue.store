@@ -32,6 +32,7 @@ function check_mount() {
 ROOT_PATH=~/alavue_test_files
 ALAVUE_PATH=~/.alavue
 FILE_DB="$ALAVUE_PATH"/file_db
+KEY=foo
 
 #
 ## Cloud Storage Mount Points
@@ -66,7 +67,7 @@ fi
 
 function upload() {
 	#encrypt
-	cp "$1" "$1".enc	# TODO actually encrypt
+	openssl enc -aes-256-ofb -k "$KEY" -in "$1" -out "$1".enc
 	#MxN split
 	split -n 2 "$1".enc "$2".	# TODO actually do an MxN split
 	#upload
