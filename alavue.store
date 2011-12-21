@@ -20,7 +20,7 @@
 #along with Alavue.  If not, see <http://www.gnu.org/licenses/>.
 
 function check_mount() {
-	if [ `mountpoint -q "$1"` ]; then
+	if ! mountpoint -q "$1"; then
 		echo "Please mount $1"
 		exit 1
 	fi
@@ -133,4 +133,5 @@ do
 		sqlite3 "$FILE_DB" "DELETE FROM files WHERE path='$f'"
 	fi
 done
-# TODO upload file_db
+cloud_name=`gen_cloud_name "$FILE_DB"`
+upload "$FILE_DB" "$cloud_name"
