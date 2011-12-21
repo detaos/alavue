@@ -70,8 +70,8 @@ function upload() {
 	#MxN split
 	split -n 2 "$1".enc "$2".	# TODO actually do an MxN split
 	#upload
-	cp "$2".aa $mount_point0/"$2"
-	cp "$2".ab $mount_point1/"$2"
+	cp "$2".aa $mount_point0/"$2".aa
+	cp "$2".ab $mount_point1/"$2".ab
 	#clean up from encryption and split
 	rm "$1".enc
 	rm "$2".aa
