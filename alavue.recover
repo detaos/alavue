@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Alavue: Open Secure Distributed Remote Backup
 
 #Copyright: 2011-2012, Rick Battle <rick.battle@solmera.com>
@@ -17,5 +19,25 @@
 #You should have received a copy of the GNU General Public License
 #along with Alavue.  If not, see <http://www.gnu.org/licenses/>.
 
-#!/bin/bash
+function check_mount() {
+	if ! mountpoint -q "$1"; then
+		echo "Please mount $1"
+		exit 1
+	fi
+}
 
+#
+## Alavue Settings
+#
+ROOT_PATH=~/alavue_test_files
+ALAVUE_PATH=~/.alavue
+FILE_DB="$ALAVUE_PATH"/file_db
+
+#
+## Cloud Storage Mount Points
+#
+mount_point0=/media/alavue0
+mount_point1=/media/alavue1
+
+check_mount $mount_point0
+check_mount $mount_point1
