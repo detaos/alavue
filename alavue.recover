@@ -41,3 +41,9 @@ mount_point1=/media/alavue1
 
 check_mount $mount_point0
 check_mount $mount_point1
+
+function gen_cloud_name() {
+	cloud_name=`openssl dgst -sha1 -hex "$1"`
+	IFS=' ' read -ra cloud_name <<< "$cloud_name"
+	echo "${cloud_name[${#cloud_name[@]}-1]}"
+}
