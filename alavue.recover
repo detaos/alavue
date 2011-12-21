@@ -43,13 +43,23 @@ check_mount $mount_point0
 check_mount $mount_point1
 
 function gen_cloud_name() {
-	cloud_name=`openssl dgst -sha1 -hex "$1"`
+	cloud_name=`echo -n "$1" | openssl dgst -sha1 -hex`
 	IFS=' ' read -ra cloud_name <<< "$cloud_name"
 	echo "${cloud_name[${#cloud_name[@]}-1]}"
 }
 
 function recover() {
-	# TODO
+	#download
+	cp $mount_point0/"$2" "$2".aa
+	cp $mount_point1/"$2" "$2".ab
+	#join
+	cat "$2"* > "$1".enc
+	#decrypt
+	cp "$1".enc "$1"	# TODO actually encrypt
+	#clean up from join and decrypt
+	rm "$2".aa
+	rm "$2".ab
+	rm "$1".enc
 }
 
 #check for existence of file database
