@@ -18,8 +18,8 @@ Notes:
 Database Structure:
 
 Files:
-column		type		attributes		comments
-fid			INTEGER						file id, PRIMARY KEY
-path		TINYTEXT					full file path including name
-updated		INT			unsigned		millisecond time (since epoch) of last getting checked by alavue
-name		TINYTEXT					name of file as seen in the cloud
+column      type        attributes      comments
+fid         INTEGER                     file id, PRIMARY KEY
+path        TINYTEXT                    full file path including name
+updated     INT         unsigned        millisecond time (since epoch) of last getting checked by alavue
+name        TINYTEXT                    name of file as seen in the cloud
