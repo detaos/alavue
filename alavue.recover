@@ -47,3 +47,13 @@ function gen_cloud_name() {
 	IFS=' ' read -ra cloud_name <<< "$cloud_name"
 	echo "${cloud_name[${#cloud_name[@]}-1]}"
 }
+
+function recover() {
+	# TODO
+}
+
+#check for existence of file database
+if [ ! -f "$FILE_DB" ]; then
+	cloud_name=`gen_cloud_name "$FILE_DB"`
+	recover "$FILE_DB" "$cloud_name"
+fi
