@@ -79,7 +79,7 @@ function upload() {
 }
 
 function gen_cloud_name() {
-	cloud_name=`openssl dgst -sha1 -hex "$1"`
+	cloud_name=`echo -n "$1" | openssl dgst -sha1 -hex`
 	IFS=' ' read -ra cloud_name <<< "$cloud_name"
 	echo "${cloud_name[${#cloud_name[@]}-1]}"
 }
