@@ -55,7 +55,7 @@ function recover() {
 	#join
 	cat "$2"* > "$1".enc
 	#decrypt
-	cp "$1".enc "$1"	# TODO actually encrypt
+	cp "$1".enc "$1"	# TODO actually decrypt
 	#clean up from join and decrypt
 	rm "$2".aa
 	rm "$2".ab
